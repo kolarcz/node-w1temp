@@ -8,7 +8,7 @@ Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI wi
 W1 configuration:
 
 1. at the end of file /boot/config.txt add `dtoverlay=w1-gpio,gpiopin=<gpiopin>` where &lt;gpiopin&gt; is pin where is connected w1 data channel
-2. to cron add `@reboot sudo modprobe w1-gpio && sudo modprobe w1-therm`
+2. run `modprobe w1-gpio && modprobe w1-therm` (it can be at cron too: `@reboot sudo modprobe w1-gpio && sudo modprobe w1-therm`)
 
 ## Methods
 
