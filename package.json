@@ -1,0 +1,29 @@
+{
+  "name": "node-w1temp",
+  "version": "1.0.0",
+  "description": "Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI with node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kolarcz/node-w1temp.git"
+  },
+  "keywords": [
+    "measure",
+    "temperature",
+    "ds18b20",
+    "raspberry",
+    "1wire"
+  ],
+  "author": "Petr Kolář <kolarcz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kolarcz/node-w1temp/issues"
+  },
+  "homepage": "https://github.com/kolarcz/node-w1temp#readme",
+  "dependencies": {
+    "gpio": "^0.2.7"
+  }
+}
