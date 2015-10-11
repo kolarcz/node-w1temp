@@ -2,7 +2,7 @@
 Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI with `node.js`
 
 ## Instalation
-`npm install node-w1temp`
+`npm install w1temp`
 
 ## Dependencies
 W1 configuration:
@@ -23,7 +23,7 @@ Return actual temperature on sensor in celsius or null.
 
 ## Example
 ```javascript
-var W1Temp = require('node-w1temp');
+var W1Temp = require('w1temp');
 
 // power on gpio if any is connected as w1 power
 W1Temp.gpioPower(14);
