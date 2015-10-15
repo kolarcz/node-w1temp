@@ -2,27 +2,44 @@ var FS = require("fs");
 var GPIO = require("gpio");
 
 
-function W1TempSensor(sensorUid) {
+function W1TempSensor(sensorUid, initTime) {
   this.sensorUid = sensorUid;
+  this.initTime = initTime;
+  this.resetInitTime_();
 }
 
 W1TempSensor.prototype = {
 
-  getTemperature: function () {
-    var file = this.getFilePath_(this.sensorUid);
+  resetInitTime_: function () {
+    this.initializedFrom = new Date() + this.initTime;
+  },
 
-    if (!FS.existsSync(file)) {
-      return null;
-    }
+  getTemperature: function (cb) {
+    cb = typeof cb == 'function' ? cb : function(){};
+    var waitTime = Math.max(0, this.initializedFrom - new Date());
+    var this_ = this;
 
-    var data = String(FS.readFileSync(file));
-    extracted = this.extractData_(data);
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        var file = this_.getFilePath_(this_.sensorUid);
 
-    if (!extracted || extracted.crc !== 'YES') {
-      return null;
-    }
+        if (!FS.existsSync(file)) {
+          reject();
+          cb(null);
+        } else {
+          var data = String(FS.readFileSync(file));
+          extracted = this_.extractData_(data);
 
-    return extracted.temperature;
+          if (!extracted || extracted.crc !== 'YES') {
+            reject();
+            cb(null);
+          } else {
+            resolve(extracted.temperature);
+            cb(extracted.temperature);
+          }
+        }
+      }, waitTime);
+    });
   },
 
   getFilePath_: function (sensorUid) {
@@ -49,19 +66,24 @@ var instances = {};
 
 module.exports = {
 
-  sensor: function (sensorUid) {
+  sensor: function (sensorUid, initTimeInMs) {
     if (typeof sensorUid !== 'string') {
       return null;
     }
 
     if (!instances[sensorUid]) {
-      instances[sensorUid] = new W1TempSensor(sensorUid);
+      var initTime = arguments.length > 1 ? initTimeInMs : 2000;
+      instances[sensorUid] = new W1TempSensor(sensorUid, initTime);
     }
 
     return instances[sensorUid];
   },
 
   gpioPower: function (gpioId) {
+    for (var sensorUid in instances) {
+      instances[sensorUid].resetInitTime_();
+    }
+
     var gpio = GPIO.export(gpioId, {
       direction: 'out',
       ready: function () {
