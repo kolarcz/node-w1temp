@@ -11,7 +11,7 @@ function W1TempSensor(sensorUid, initTime) {
 W1TempSensor.prototype = {
 
   resetInitTime_: function () {
-    this.initializedFrom = new Date() + this.initTime;
+    this.initializedFrom = +new Date() + this.initTime;
   },
 
   getTemperature: function (cb) {
