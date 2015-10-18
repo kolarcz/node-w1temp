@@ -16,30 +16,34 @@ W1TempSensor.prototype = {
 
   getTemperature: function (cb) {
     cb = typeof cb == 'function' ? cb : function(){};
-    var waitTime = Math.max(0, this.initializedFrom - new Date());
-    var this_ = this;
+    var file = this.getFilePath_(this.sensorUid);
 
-    return new Promise(function (resolve, reject) {
-      setTimeout(function () {
-        var file = this_.getFilePath_(this_.sensorUid);
+    var read = function (resolve, reject) {
+      if (FS.existsSync(file)) {
+        var data = String(FS.readFileSync(file));
+        extracted = this.extractData_(data);
 
-        if (!FS.existsSync(file)) {
-          reject();
-          cb(null);
-        } else {
-          var data = String(FS.readFileSync(file));
-          extracted = this_.extractData_(data);
-
-          if (!extracted || extracted.crc !== 'YES') {
-            reject();
-            cb(null);
-          } else {
-            resolve(extracted.temperature);
-            cb(extracted.temperature);
-          }
+        if (extracted && extracted.crc == 'YES') {
+          resolve(extracted.temperature);
+          cb(extracted.temperature);
+          return
         }
-      }, waitTime);
-    });
+      }
+
+      var waitTime = Math.max(0, this.initializedFrom - new Date());
+
+      if (waitTime > 0) {
+        setTimeout(
+          read.bind(this, resolve, reject),
+          Math.min(1000, waitTime)
+        );
+      } else {
+        reject();
+        cb(null);
+      }
+    };
+
+    return new Promise(read.bind(this));
   },
 
   getFilePath_: function (sensorUid) {
@@ -72,7 +76,7 @@ module.exports = {
     }
 
     if (!instances[sensorUid]) {
-      var initTime = arguments.length > 1 ? initTimeInMs : 2000;
+      var initTime = arguments.length > 1 ? initTimeInMs : 15000;
       instances[sensorUid] = new W1TempSensor(sensorUid, initTime);
     }
 

@@ -15,7 +15,7 @@ W1 configuration:
 ### W1Temp.gpioPower(*gpio pin number*)
 Power on gpio pin if any is connected as w1 power and reset init time on existing sensor instances.
 
-### W1Temp.sensor(*sensor uid* [, *init time in ms = 2000*])
+### W1Temp.sensor(*sensor uid* [, *init time in ms = 15000*])
 Get sensor instance (sensor uid is located in /sys/bus/w1/devices/).
 
 ### &lt;sensor_instance&gt;.getTemperature([*callback(temp)*])
