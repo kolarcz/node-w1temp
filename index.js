@@ -39,11 +39,15 @@ W1TempSensor.prototype = {
         );
       } else {
         reject();
-        cb(null);
+        cb({});
       }
     };
 
     return new Promise(read.bind(this));
+  },
+
+  getFahrenheitFromCelsius_: function (celsius) {
+    return celsius * 9 / 5 + 32;
   },
 
   getFilePath_: function (sensorUid) {
@@ -57,8 +61,14 @@ W1TempSensor.prototype = {
       return false;
     }
 
+    var celsius = parseInt(tmp[4], 10) / 1000;
+    var fahrenheit = this.getFahrenheitFromCelsius_(celsius);
+
     return {
-      temperature: parseInt(tmp[4], 10) / 1000,
+      temperature: {
+        celsius: celsius,
+        fahrenheit: fahrenheit
+      },
       crc: tmp[2]
     }
   }

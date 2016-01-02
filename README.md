@@ -19,7 +19,7 @@ Power on gpio pin if any is connected as w1 power and reset init time on existin
 Get sensor instance (sensor uid is located in /sys/bus/w1/devices/).
 
 ### &lt;sensor_instance&gt;.getTemperature([*callback(temp)*])
-Return Promise which returns in then actual temperature in celsius or catch if fails. Or you can use callback (null if fails).
+Return Promise which returns object of actual temperature or catch if fails. Or you can use callback (undefined if fails).
 
 ## Example
 ```javascript
@@ -32,15 +32,17 @@ W1Temp.gpioPower(13);
 var sensor = W1Temp.sensor('28-00000636a3e3');
 
 
-// print actual temperature in celsius on sensor by promise
+// print actual temperature on sensor by promise
 sensor.getTemperature().then(function (temp) {
-  console.log(temp + ' °C');  
+  console.log(temp.celsius + ' °C');
+  console.log(temp.fahrenheit + ' °F');
 }).catch(function () {
   console.log('Cant read temperature');
 });
 
 // or as callback
 sensor.getTemperature(function (temp) {
-  console.log(temp + ' °C');  
+  console.log(temp.celsius + ' °C');
+  console.log(temp.fahrenheit + ' °F');
 });
 ```
