@@ -13,7 +13,10 @@ W1 configuration:
 ## Methods
 
 ### W1Temp.gpioPower(*gpio pin number*)
-Power on gpio pin if any is connected as w1 power and reset init time on existing sensor instances.
+Power on gpio pin if any is connected as w1 power (and reset init time on existing sensor instances).
+
+### W1Temp.sensorsUids()
+Get list of available sensors uids.
 
 ### W1Temp.sensor(*sensor uid* [, *init time in ms = 15000*])
 Get sensor instance (sensor uid is located in /sys/bus/w1/devices/).
@@ -27,6 +30,9 @@ var W1Temp = require('w1temp');
 
 // power on gpio if any is connected as w1 power
 W1Temp.gpioPower(13);
+
+// print list of available sensors uids ([ '28-00000636a3e3' ])
+console.log(W1Temp.sensorsUids());
 
 // instance of temperature sensor
 var sensor = W1Temp.sensor('28-00000636a3e3');

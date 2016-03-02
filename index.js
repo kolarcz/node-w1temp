@@ -2,6 +2,17 @@ var FS = require("fs");
 var GPIO = require("gpio");
 
 
+var basePath = '/sys/bus/w1/devices/';
+
+function getBasePath() {
+  return basePath;
+}
+
+function getPathToSourceOfUid(uid) {
+  return getBasePath() + uid + '/w1_slave';
+}
+
+
 function W1TempSensor(sensorUid, initTime) {
   this.sensorUid = sensorUid;
   this.initTime = initTime;
@@ -16,7 +27,7 @@ W1TempSensor.prototype = {
 
   getTemperature: function (cb) {
     cb = typeof cb == 'function' ? cb : function(){};
-    var file = this.getFilePath_(this.sensorUid);
+    var file = getPathToSourceOfUid(this.sensorUid);
 
     var read = function (resolve, reject) {
       if (FS.existsSync(file)) {
@@ -50,10 +61,6 @@ W1TempSensor.prototype = {
     return celsius * 9 / 5 + 32;
   },
 
-  getFilePath_: function (sensorUid) {
-    return '/sys/bus/w1/devices/' + sensorUid + '/w1_slave';
-  },
-
   extractData_: function (data) {
     var tmp = String(data).match(/^([0-9a-f]{2} )+: crc=[0-9a-f]+ ([a-z]+)\n([0-9a-f]{2} )+t=([0-9]+)$/mi);
 
@@ -80,19 +87,6 @@ var instances = {};
 
 module.exports = {
 
-  sensor: function (sensorUid, initTimeInMs) {
-    if (typeof sensorUid !== 'string') {
-      return null;
-    }
-
-    if (!instances[sensorUid]) {
-      var initTime = arguments.length > 1 ? initTimeInMs : 15000;
-      instances[sensorUid] = new W1TempSensor(sensorUid, initTime);
-    }
-
-    return instances[sensorUid];
-  },
-
   gpioPower: function (gpioId) {
     for (var sensorUid in instances) {
       instances[sensorUid].resetInitTime_();
@@ -104,6 +98,28 @@ module.exports = {
         gpio.set(1);
       }
     });
+  },
+
+  sensorsUids: function () {
+    var items = FS.readdirSync(getBasePath());
+    var uids = items.filter(function (item) {
+      return FS.existsSync(getPathToSourceOfUid(item));
+    });
+
+    return uids;
+  },
+
+  sensor: function (sensorUid, initTimeInMs) {
+    if (typeof sensorUid !== 'string') {
+      return null;
+    }
+
+    if (!instances[sensorUid]) {
+      var initTime = arguments.length > 1 ? initTimeInMs : 15000;
+      instances[sensorUid] = new W1TempSensor(sensorUid, initTime);
+    }
+
+    return instances[sensorUid];
   }
 
 };
