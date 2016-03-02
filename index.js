@@ -100,7 +100,7 @@ module.exports = {
     });
   },
 
-  sensorsUids: function () {
+  getSensorsUids: function () {
     var items = FS.readdirSync(getBasePath());
     var uids = items.filter(function (item) {
       return FS.existsSync(getPathToSourceOfUid(item));
