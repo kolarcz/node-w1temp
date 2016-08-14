@@ -12,23 +12,23 @@ W1 configuration:
 
 ## Methods
 
-### W1Temp.setGpioPower(*gpio pin number*)
+### W1Temp.setGpioPower(*gpioPinNumber*)
 Turn on any gpio pin as W1 power.
 
-### W1Temp.setGpioData(*gpio pin number*)
+### W1Temp.setGpioData(*gpioPinNumber*)
 Set any gpio pin to use as W1 data channel (required root permissions).
 
 ### W1Temp.getSensorsUids()
 Return Promise which returns list of available sensors uids, catch if fails.
 
-### W1Temp.getSensor(*sensor uid*)
+### W1Temp.getSensor(*sensorUid*)
 Return Promise which returns sensor instance, catch if fails.
 
 ### &lt;sensor_instance&gt;.getTemperature()
 Returns actual temperature on sensor.
 
 ### &lt;sensor_instance&gt;.on('change', *callback(temp)*)
-Event on change teperature.
+Event on change temperature.
 
 ## Example
 ```javascript
