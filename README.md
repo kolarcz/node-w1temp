@@ -12,43 +12,51 @@ W1 configuration:
 
 ## Methods
 
-### W1Temp.gpioPower(*gpio pin number*)
-Power on gpio pin if any is connected as w1 power (and reset init time on existing sensor instances).
+### W1Temp.setGpioPower(*gpio pin number*)
+Turn on any gpio pin as W1 power.
+
+### W1Temp.setGpioData(*gpio pin number*)
+Set any gpio pin to use as W1 data channel (required root permissions).
 
 ### W1Temp.getSensorsUids()
-Get list of available sensors uids.
+Return Promise which returns list of available sensors uids, catch if fails.
 
-### W1Temp.sensor(*sensor uid* [, *init time in ms = 15000*])
-Get sensor instance (sensor uid is located in /sys/bus/w1/devices/).
+### W1Temp.getSensor(*sensor uid*)
+Return Promise which returns sensor instance, catch if fails.
 
-### &lt;sensor_instance&gt;.getTemperature([*callback(temp)*])
-Return Promise which returns object of actual temperature or catch if fails. Or you can use callback (undefined if fails).
+### &lt;sensor_instance&gt;.getTemperature()
+Returns actual temperature on sensor.
+
+### &lt;sensor_instance&gt;.on('change', *callback(temp)*)
+Event on change teperature.
 
 ## Example
 ```javascript
 var W1Temp = require('w1temp');
 
-// power on gpio if any is connected as w1 power
-W1Temp.gpioPower(13);
+// turn on gpio pin 13 as W1 power if you want to
+W1Temp.setGpioPower(13);
 
-// print list of available sensors uids ([ '28-00000636a3e3' ])
-console.log(W1Temp.getSensorsUids());
+// set gpio pin 6 to use as W1 data channel
+// if is not set by instructions above (required root permissions)
+W1Temp.setGpioData(6);
 
-// instance of temperature sensor
-var sensor = W1Temp.sensor('28-00000636a3e3');
-
-
-// print actual temperature on sensor by promise
-sensor.getTemperature().then(function (temp) {
-  console.log(temp.celsius + ' °C');
-  console.log(temp.fahrenheit + ' °F');
-}).catch(function () {
-  console.log('Cant read temperature');
+// print list of available sensors uids (ex.: [ '28-00000636a3e3' ])
+W1Temp.getSensorsUids().then(function (sensorsUids) {
+  console.log(sensorsUids);
 });
 
-// or as callback
-sensor.getTemperature(function (temp) {
-  console.log(temp.celsius + ' °C');
-  console.log(temp.fahrenheit + ' °F');
+// get instance of temperature sensor
+W1Temp.getSensor('28-00000636a3e3').then(function (sensor) {
+
+  // print actual temperature
+  var temp = sensor.getTemperature();
+  console.log(temp, '°C');
+
+  // print actual temperature on changed
+  sensor.on('change', function (temp) {
+    console.log('Temp changed:', temp, '°C');
+  });
+
 });
 ```
