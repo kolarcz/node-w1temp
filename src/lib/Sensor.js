@@ -1,23 +1,23 @@
 import fs from 'fs';
 import { EventEmitter } from 'events';
 
-function Sensor(file) {
-  this.file = file;
-  this.lastTemp = false;
+class Sensor extends EventEmitter {
 
-  setInterval(() => {
-    const newTemp = this.getTemperature();
+  constructor(file) {
+    super();
 
-    if (this.lastTemp !== newTemp) {
-      this.lastTemp = newTemp;
-      this.emit('change', newTemp);
-    }
-  }, 250);
-}
+    this.file = file;
+    this.lastTemp = false;
 
-Sensor.prototype = {
+    setInterval(() => {
+      const newTemp = this.getTemperature();
 
-  __proto__: EventEmitter.prototype,
+      if (this.lastTemp !== newTemp) {
+        this.lastTemp = newTemp;
+        this.emit('change', newTemp);
+      }
+    }, 250);
+  }
 
   getTemperature() {
     try {
@@ -33,6 +33,6 @@ Sensor.prototype = {
     return false;
   }
 
-};
+}
 
 export default Sensor;
