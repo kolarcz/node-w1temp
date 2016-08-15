@@ -51,7 +51,7 @@ W1Temp.getSensor('28-00000636a3e3').then(function (sensor) {
 
   // print actual temperature
   var temp = sensor.getTemperature();
-  console.log(temp, '°C');
+  console.log('Actual temp:', temp, '°C');
 
   // print actual temperature on changed
   sensor.on('change', function (temp) {
