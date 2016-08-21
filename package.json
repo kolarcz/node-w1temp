@@ -1,6 +1,6 @@
 {
   "name": "w1temp",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI with node.js",
   "main": "dist/index.js",
   "scripts": {
