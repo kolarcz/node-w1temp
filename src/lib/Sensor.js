@@ -3,20 +3,22 @@ import { EventEmitter } from 'events';
 
 class Sensor extends EventEmitter {
 
-  constructor(file) {
+  constructor(file, enablePolling = true) {
     super();
 
     this.file = file;
     this.lastTemp = false;
 
-    setInterval(() => {
-      const newTemp = this.getTemperature();
+    if (enablePolling) {
+      setInterval(() => {
+        const newTemp = this.getTemperature();
 
-      if (this.lastTemp !== newTemp) {
-        this.lastTemp = newTemp;
-        this.emit('change', newTemp);
-      }
-    }, 250);
+        if (this.lastTemp !== newTemp) {
+          this.lastTemp = newTemp;
+          this.emit('change', newTemp);
+        }
+      }, 250);
+    }
   }
 
   getTemperature() {
