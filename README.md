@@ -27,6 +27,9 @@ Return Promise which returns sensor instance, catch if fails.
 ### &lt;sensor_instance&gt;.getTemperature()
 Returns actual temperature on sensor.
 
+### &lt;sensor_instance&gt;.getTemperatureAsync()
+Return Promise which returns temperature on sensor.
+
 ### &lt;sensor_instance&gt;.on('change', *callback(temp)*)
 Event on change temperature.
 

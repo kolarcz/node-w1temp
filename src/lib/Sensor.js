@@ -33,6 +33,29 @@ class Sensor extends EventEmitter {
     return false;
   }
 
+  getTemperatureAsync() {
+    return new Promise((resolve, reject) => {
+      fs.readFile(this.file, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const match = data.match(/t=(-?\d+)/);
+
+        if (!match) {
+          reject(new Error('Unable to parse sensor data'));
+          return;
+        }
+        if (data.indexOf('YES') === -1) {
+          reject(new Error('CRC mismatch'));
+          return;
+        }
+        const temp = parseInt(match[1], 10) / 1000;
+        resolve(temp);
+      });
+    });
+  }
+
 }
 
 export default Sensor;
