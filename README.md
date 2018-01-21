@@ -21,11 +21,15 @@ Set any gpio pin to use as W1 data channel (required root permissions).
 ### W1Temp.getSensorsUids()
 Return Promise which returns list of available sensors uids, catch if fails.
 
-### W1Temp.getSensor(*sensorUid*)
+### W1Temp.getSensor(*sensorUid*, *enablePolling* _= true_)
 Return Promise which returns sensor instance, catch if fails.
+The *enablePolling* argument controls whether the sensor will emit *change* events by monitoring the sensor value in the background. Defaults to enabled.
 
 ### &lt;sensor_instance&gt;.getTemperature()
 Returns actual temperature on sensor.
+
+### &lt;sensor_instance&gt;.getTemperatureAsync()
+Return Promise which returns temperature on sensor.
 
 ### &lt;sensor_instance&gt;.on('change', *callback(temp)*)
 Event on change temperature.

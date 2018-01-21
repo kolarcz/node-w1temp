@@ -3,20 +3,22 @@ import { EventEmitter } from 'events';
 
 class Sensor extends EventEmitter {
 
-  constructor(file) {
+  constructor(file, enablePolling = true) {
     super();
 
     this.file = file;
     this.lastTemp = false;
 
-    setInterval(() => {
-      const newTemp = this.getTemperature();
+    if (enablePolling) {
+      setInterval(() => {
+        const newTemp = this.getTemperature();
 
-      if (this.lastTemp !== newTemp) {
-        this.lastTemp = newTemp;
-        this.emit('change', newTemp);
-      }
-    }, 250);
+        if (this.lastTemp !== newTemp) {
+          this.lastTemp = newTemp;
+          this.emit('change', newTemp);
+        }
+      }, 250);
+    }
   }
 
   getTemperature() {
@@ -31,6 +33,29 @@ class Sensor extends EventEmitter {
     } catch (err) {}
 
     return false;
+  }
+
+  getTemperatureAsync() {
+    return new Promise((resolve, reject) => {
+      fs.readFile(this.file, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const match = data.match(/t=(-?\d+)/);
+
+        if (!match) {
+          reject(new Error('Unable to parse sensor data'));
+          return;
+        }
+        if (data.indexOf('YES') === -1) {
+          reject(new Error('CRC mismatch'));
+          return;
+        }
+        const temp = parseInt(match[1], 10) / 1000;
+        resolve(temp);
+      });
+    });
   }
 
 }
