@@ -1,7 +1,7 @@
 # w1temp
 Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI with `node.js`
 
-## Instalation
+## Instalation
 `npm install w1temp`
 
 ## Dependencies
