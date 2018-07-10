@@ -18,8 +18,9 @@ Turn on any gpio pin as W1 power.
 ### W1Temp.setGpioData(*gpioPinNumber*)
 Set any gpio pin to use as W1 data channel (required root permissions).
 
-### W1Temp.getSensorsUids()
+### W1Temp.getSensorsUids(*master_bus_id* = 1)
 Return Promise which returns list of available sensors uids, catch if fails.
+If you operate multiple 1wire buses on one host, *master_bus_id* defines the 1wire bus to use.
 
 ### W1Temp.getSensor(*sensorUid*, *enablePolling* _= true_)
 Return Promise which returns sensor instance, catch if fails.
