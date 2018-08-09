@@ -3,6 +3,7 @@
   "version": "4.2.1",
   "description": "Measure temperature through DS18B20 sensor connected to 1wire to Raspberry PI with node.js",
   "main": "dist/index.js",
+  "typings": "w1temp.d.ts",
   "scripts": {
     "lint": "eslint src",
     "compile": "babel src --out-dir dist",
