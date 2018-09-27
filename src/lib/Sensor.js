@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 
 class Sensor extends EventEmitter {
 
-  constructor(file, enablePolling = true) {
+  constructor(file, enablePolling = true, interval = 250) {
     super();
 
     this.file = file;
@@ -17,7 +17,7 @@ class Sensor extends EventEmitter {
           this.lastTemp = newTemp;
           this.emit('change', newTemp);
         }
-      }, 250);
+      }, interval);
     }
   }
 
