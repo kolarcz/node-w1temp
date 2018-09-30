@@ -14,7 +14,7 @@ class Sensor extends EventEmitter {
       setInterval(() => {
         const newTemp = this.getTemperature();
 
-        if (!this.onlyIfChanged || (this.onlyIfChanged && this.lastTemp !== newTemp)) {
+        if (!this.onlyIfChanged || this.lastTemp !== newTemp) {
           this.lastTemp = newTemp;
           this.emit('change', newTemp);
         }

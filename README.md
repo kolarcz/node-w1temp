@@ -22,7 +22,7 @@ Set any gpio pin to use as W1 data channel (required root permissions).
 Return Promise which returns list of available sensors uids, catch if fails.
 If you operate multiple 1wire buses on one host, *masterBusId* defines the 1wire bus to use.
 
-### W1Temp.getSensor(*sensorUid*, *enablePolling* _= true_)
+### W1Temp.getSensor(*sensorUid*, *enablePolling* _= true_, *interval* _= 250_, *onlyIfChanged* _= true_)
 Return Promise which returns sensor instance, catch if fails.
 The *enablePolling* argument controls whether the sensor will emit *change* events by monitoring the sensor value in the background. Defaults to enabled.
 
