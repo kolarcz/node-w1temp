@@ -2,12 +2,12 @@ declare module 'w1temp' {
     import { EventEmitter } from 'events';
 
     export class Sensor extends EventEmitter {
-        constructor(file: string, enablePolling?: boolean);
+        constructor(file: string, enablePolling?: boolean, interval?: number, onlyIfChanged?: boolean);
         getTemperature(): number;
         getTemperatureAsync(): Promise<number>;
     }
 
-    export function getSensor(sensorUid: string, enablePolling?: boolean): Promise<Sensor>;
+    export function getSensor(sensorUid: string, enablePolling?: boolean, interval?: number, onlyIfChanged?: boolean): Promise<Sensor>;
 
     export function getSensorsUids(masterBusId?: number): Promise<string[]>;
 
