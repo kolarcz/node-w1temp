@@ -11,14 +11,12 @@ class Sensor extends EventEmitter {
     this.onlyIfChanged = onlyIfChanged;
 
     if (enablePolling) {
-      setInterval(() => {
-        const newTemp = this.getTemperature();
-
+      setInterval(() => this.getTemperatureAsync().catch(() => false).then(newTemp => {
         if (!this.onlyIfChanged || this.lastTemp !== newTemp) {
           this.lastTemp = newTemp;
           this.emit('change', newTemp);
         }
-      }, interval);
+      }), interval);
     }
   }
 
@@ -28,8 +26,7 @@ class Sensor extends EventEmitter {
       const match = data.match(/t=(-?\d+)/);
 
       if (data.indexOf('YES') !== -1 && match) {
-        const temp = parseInt(match[1], 10) / 1000;
-        return temp;
+        return parseInt(match[1], 10) / 1000;
       }
     } catch (err) {}
 
@@ -53,8 +50,7 @@ class Sensor extends EventEmitter {
           reject(new Error('CRC mismatch'));
           return;
         }
-        const temp = parseInt(match[1], 10) / 1000;
-        resolve(temp);
+        resolve(parseInt(match[1], 10) / 1000);
       });
     });
   }
